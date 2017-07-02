@@ -115,7 +115,7 @@ describe('framework', () => {
 
           const container = buildContainer(config);
 
-          assert.throws(() => { container.get('%non existing parameter%'); }, Error);
+          assert.throws(() => { container.get('%non existing parameter'); }, Error);
         });
 
         it('throws an error if getting not a service or parameter', () => {

@@ -115,4 +115,8 @@ const buildContainer = (config) => {
   return createScope(helpers.SCOPE_GLOBAL, {}, []);
 };
 
-module.exports = { buildContainer };
+module.exports = {
+  buildContainer,
+  TYPE_SINGLETON: helpers.TYPE_SINGLETON,
+  TYPE_EVERY_INSTANCE: helpers.TYPE_EVERY_INSTANCE,
+};

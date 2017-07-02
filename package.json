@@ -1,5 +1,5 @@
 {
-  "name": "palmen-ioc",
+  "name": "scodi",
   "version": "1.0.0",
   "description": "Scoped depenency injection container",
   "main": "src/index.js",
