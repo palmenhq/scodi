@@ -1,4 +1,5 @@
 const helpers = require('./helpers');
+const errors = require('./errors');
 
 const validateConfig = (services, parameters, scopeTypes) => {
   const serviceNames = Object.keys(services);
@@ -9,19 +10,19 @@ const validateConfig = (services, parameters, scopeTypes) => {
     const serviceDefinition = services[serviceName];
 
     if (typeof serviceDefinition.factory !== 'function') {
-      throw new Error(`The service "${serviceName}"'s factory is not a function`);
+      throw new errors.FactoryIsNotAFunctionError(serviceName);
     }
 
     if (
       serviceDefinition.scopes.indexOf(helpers.SCOPE_GLOBAL) > -1
       && serviceDefinition.scopes.length > 1
     ) {
-      throw new Error(`The service "@${serviceName}" is both in the global scope and in subscope(s)`);
+      throw new errors.GlobalAndScopedServiceError(serviceName);
     }
 
     serviceDefinition.scopes.forEach((scope) => {
       if (scopes.indexOf(scope) === -1) {
-        throw new Error(`The service "@${serviceName}" belongs to an undefined scope "${scope}"`);
+        throw new errors.UndefinedScopeBeloningError(serviceName, scope);
       }
     });
 
@@ -38,19 +39,19 @@ const validateConfig = (services, parameters, scopeTypes) => {
         && !helpers.isParameter(dependency)
         && !helpers.isScopeValue(dependency)
       ) {
-        throw new Error(`The service "@${serviceName}" has an invalid dependency declaration (must be a service, parameter, or scope value, found "${dependency}")`);
+        throw new errors.InvalidDependencyDeclarationError(serviceName, dependency);
       }
 
       if (helpers.isScopeValue(dependency)) {
         if (serviceDefinition.scopes.indexOf(helpers.SCOPE_GLOBAL) > -1) {
-          throw new Error(`The service "@${serviceName} as a dependency on the scope value "${dependency}", but is in the global scope`);
+          throw new errors.ScopedValueDependencyFromGlobalScopeError(serviceName, dependency);
         }
 
         const scopesThatHaveScopeValue = serviceDefinition.scopes.filter(scope => (
           scopeTypes[scope].indexOf(helpers.getScopeValueNameFromDeclaration(dependency)) > -1
         ));
         if (scopesThatHaveScopeValue.length === 0) {
-          throw new Error(`The service "@${serviceName}" is dependent on a non-existsing scope value "${dependency}"`);
+          throw new errors.NonExistingScopeValueDependencyError(serviceName, dependency);
         }
 
         return;
@@ -59,7 +60,7 @@ const validateConfig = (services, parameters, scopeTypes) => {
       if (helpers.isParameter(dependency)) {
         // Check so parameter exists
         if (Object.keys(parameters).indexOf(helpers.getParameterNameFromDeclaration(dependency)) === -1) {
-          throw new Error(`The service "@${serviceName}" is dependent on a non-existing parameter "${dependency}"`);
+          throw new errors.NonExistingParameterDependencyError(serviceName, dependency);
         }
 
         return;
@@ -71,7 +72,7 @@ const validateConfig = (services, parameters, scopeTypes) => {
 
       // Check so service exists
       if (serviceNames.indexOf(dependencyName) === -1) {
-        throw new Error(`The service "@${serviceName}" is dependent on a non-existing service "${dependency}"`);
+        throw new errors.NonExistingServiceDependencyError(serviceName, dependency);
       }
 
       // Check so service is in at least one of the same scopes
@@ -79,14 +80,14 @@ const validateConfig = (services, parameters, scopeTypes) => {
         dependencyDefinition.scopes.indexOf(scope) > -1
       ));
       if (commonScopes.length === 0 && dependencyDefinition.scopes[0] !== helpers.SCOPE_GLOBAL) {
-        throw new Error(`The service "@${serviceName}" is dependent on the service "${dependency}", which is not accessible in the current scope`);
+        throw new errors.DependencyNotAccessibleInScopeError(serviceName, dependency);
       }
 
       // Detect circular references
       const dependencyDependencies = helpers.getDependencyNames(dependencyDefinition.dependencies);
       dependencyDependencies.forEach((dependencysDependencyDeclaration) => {
         if (helpers.getServiceNameFromDeclaration(dependencysDependencyDeclaration) === serviceName) {
-          throw new Error(`Circular dependency detected! (The service "@${serviceName}" is dependent on "${dependency}", which depends on "@${serviceName}")`);
+          throw new errors.CircularDependencyError(serviceName, dependency);
         }
       });
     });
