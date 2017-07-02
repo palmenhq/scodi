@@ -1,0 +1,27 @@
+{
+  "name": "palmen-ioc",
+  "version": "1.0.0",
+  "description": "Scoped depenency injection container",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha `find src -name *.test.js`",
+    "test-coverage": "NODE_ENV=test istanbul cover _mocha -- -- -R spec `find src -name *.test.js`",
+    "lint": "eslint src"
+  },
+  "keywords": [
+    "Dependency Injection",
+    "DiC",
+    "Inversion of Control",
+    "IoC"
+  ],
+  "author": "Johan Palmfjord",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^3.0.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.6.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.4.2",
+    "sinon": "^2.3.6"
+  }
+}
