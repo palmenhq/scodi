@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Scoped depenency injection container",
   "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/palmfjord/scodi.git"
+  },
   "scripts": {
     "test": "NODE_ENV=test mocha `find src -name *.test.js`",
     "test-coverage": "NODE_ENV=test istanbul cover _mocha -- -- -R spec `find src -name *.test.js`",
