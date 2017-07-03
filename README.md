@@ -31,7 +31,7 @@ const config = {
     whatToSayHiTo: 'world',
   },
 
-  scopes: {},
+  scopeTypes: {},
 }
 
 const container = buildContainer(config);
@@ -103,7 +103,7 @@ const config = {
     baz: 'whatever',
   },
 
-  scopes: {}, // See section Scopes to learn what this is
+  scopeTypes: {}, // See section Scopes to learn what this is
 }
 
 const container = buildContainer(config);
@@ -188,7 +188,7 @@ const config = {
   },
 
   parameters: {},
-  scopes: {},
+  scopeTypes: {},
 };
 
 const container = buildContainer(config)
@@ -223,7 +223,7 @@ const config = {
     bar: 'whatever',
   },
 
-  scopes: {},
+  scopeTypes: {},
 }
 
 const container = buildContainer(config);
@@ -236,7 +236,7 @@ container.get('@foo')() // "whatever"
 
 A **scope** is basically new instance of the container, created during runtime, that has *scope values*. Scope values are like parameters, but
   are passed when creating the scope (during runtime), meaning they are very useful for i.e. passing the current request's user or locale as a
-  dependency instead of a regular function parameter to the services. Scope values are prefixed with `#`, and scope types are defined in the `scopes`
+  dependency instead of a regular function parameter to the services. Scope values are prefixed with `#`, and scope types are defined in the `scopesTypes`
   props in the config. A scope type simply defines which scope value must be passed when creating the scope.
 
 A service within a subscope can depend on a service from the global scope, or the same scope, but a service from the global scope can not depend on
@@ -262,7 +262,7 @@ const config = {
 
   parameters: {},
 
-  scopes: {
+  scopeTypes: {
     // Define that the scope type "someScope" must be created with the value "baz"
     someScope: ['baz'],
   },
@@ -276,7 +276,8 @@ foo(); // "im foo!"
 
 container.get('@bar'); // Error thrown! 'Service "@bar" is not in the global scope'
 
-conatiner.createScope('someScope') // Error thrown! 'Missing scope value "#baz"'
+container.createScope('someScope') // Error thrown! 'No scope values provided when creating scope someScope'
+container.createScope('someScope', { notBaz: '' }) // Error thrown! 'Missing scope value "#baz"'
 
 const scope1container = container.createScope('someScope', { baz: 'a value' });
 const scope2container = container.createScope('someScope', { baz: 'another value' });
