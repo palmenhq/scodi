@@ -103,6 +103,10 @@ const validateScope = (scope, scopeConfig, scopeTypes) => {
     throw new Error(`Undefined scope "${scope}"`);
   }
 
+  if (scopeConfig === undefined || Object.keys(scopeConfig).length === 0) {
+    throw new Error(`No scope values provided when creating scope ${scope}`);
+  }
+
   scopeTypes[scope].forEach((scopeValueName) => {
     if (Object.keys(scopeConfig).indexOf(scopeValueName) === -1) {
       throw new Error(`Missing scope value "#${scopeValueName}"`);
