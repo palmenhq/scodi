@@ -42,7 +42,7 @@ const buildContainer = (config) => {
       const serviceDefinition = serviceDefinitions[serviceName];
 
       if (!helpers.isServiceInScope(serviceDefinition, scope)) {
-        throw new Error(`Service "@${service}" is not in the ${scope} scope`);
+        throw new Error(`Service "@${serviceName}" is not in the ${scope} scope`);
       }
 
       if (helpers.isSingleton(serviceDefinition) && instantiatedSingletonServices[serviceName]) {
