@@ -54,7 +54,7 @@ const buildContainer = (config) => {
         // eslint-disable-next-line no-use-before-define
         const dependencies = serviceDefinition.dependencies.map(dependency => get(dependency, scope));
         return instantiateService(
-          service,
+          serviceName,
           serviceDefinition,
           serviceToInstantiate => serviceToInstantiate.factory(...dependencies)
         );
@@ -69,7 +69,7 @@ const buildContainer = (config) => {
         });
 
         return instantiateService(
-          service,
+          serviceName,
           serviceDefinition,
           serviceToInstantiate => serviceToInstantiate.factory(dependencies)
         );
